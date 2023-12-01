@@ -32,10 +32,11 @@ class MoviesController {
   }
 
   async index(request, response) {
-    const { user_id } = request.query;
+    const { title, user_id } = request.query;
 
     const movieNotes = await knex("movieNotes")
       .where({ user_id })
+      .whereLike("title", `%${title}%`)
       .orderBy("title");
 
     return response.json(movieNotes);
