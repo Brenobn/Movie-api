@@ -59,6 +59,7 @@ class MoviesController {
         .whereLike("movieNotes.title", `%${title}%`)
         .whereIn("name", filterTags)
         .innerJoin("movieNotes", "movieNotes.id", "tags.movieNotes_id")
+        .orderBy("movieNotes.title")
 
     } else {
       movieNotes = await knex("movieNotes")
@@ -67,8 +68,18 @@ class MoviesController {
         .orderBy("title");
     }
 
+    const userTags = await knex("tags").where({ user_id });
+    const movieNotesWithTags = movieNotes.map(note => {
+      const movieNotesTags = userTags.filter(tag => tag.movieNotes_id === movieNotes.id);
 
-    return response.json(movieNotes);
+      return{
+        ...note,
+        tags: movieNotesTags
+      }
+    });
+
+
+    return response.json(movieNotesWithTags);
   }
 }
 
