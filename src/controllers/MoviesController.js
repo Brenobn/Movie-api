@@ -42,7 +42,7 @@ class MoviesController {
   }
 
   async index(request, response) {
-    const { title, user_id, tags } = request.query;
+    const { title, description, user_id, tags } = request.query;
 
     let movieNotes;
 
@@ -53,10 +53,12 @@ class MoviesController {
         .select([
           "movieNotes.id",
           "movieNotes.title",
+          "movieNotes.description",
           "movieNotes.user_id",
         ])
         .where("movieNotes.user_id", user_id)
         .whereLike("movieNotes.title", `%${title}%`)
+        .whereLike("movieNotes.description", `%${description}%`)
         .whereIn("name", filterTags)
         .innerJoin("movieNotes", "movieNotes.id", "tags.movieNotes_id")
         .orderBy("movieNotes.title")
