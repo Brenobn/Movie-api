@@ -22,6 +22,14 @@ class MoviesController {
 
     return response.json(movieNotes);
   }
+
+  async delete(request, response) {
+    const { id } = request.params;
+
+    await knex("movieNotes").where({ id }).delete();
+
+    return response.json();
+  }
 }
 
 module.exports = MoviesController;
